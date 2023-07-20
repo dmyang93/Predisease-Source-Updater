@@ -1,0 +1,43 @@
+panelApp: 
+  API_URL: https://panelapp.genomicsengland.co.uk/api/v1
+
+panel_key:
+  - hash_id
+  - name
+  - disease_group
+  - status
+  - version
+  - version_created
+  - relevant_disorders
+  - types: name
+  - genes: entity_name
+  - stats:
+    - number_of_genes
+    - number_of_strs
+    - number_of_regions
+
+
+gene_key:
+  - entity_type
+  - entity_name
+  - confidence_level
+  - penetrance
+  - mode_of_pathogenicity
+  - publications
+  - evidence
+  - mode_of_inheritance
+  - phenotypes
+  - tags
+  - transcript
+  - panel: id
+  - gene_data:
+    - alias
+    - biotype
+    - hgnc_id
+    - gene_name
+    - omim_gene
+    - alias_name
+    - hgnc_symbol
+    - hgnc_release
+    - hgnc_date_symbol_changed
+    - ensembl_genes
