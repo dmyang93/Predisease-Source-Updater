@@ -1,7 +1,6 @@
 import os
 import sys
 import requests
-from collections import defaultdict
 
 PANELAPP_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(PANELAPP_DIR)
@@ -66,12 +65,12 @@ def extract_data_by_key(gene_panel_datas: list, panelapp_keys: list) -> dict:
     target하는 값들의 key는 configuration을 통해 컨트롤된다.
 
     Args:
-        gene_panel_datas (list): PanelApp json dictionary에서 추출한 데이터 list
-        panelapp_keys (list): 리턴할 dictionary에서 value에 들어갈 data에 대한 key들의 리스트
+        gene_panel_datas (list): PanelApp json dictionary에서 추출한 데이터 list.
+        panelapp_keys (list): 리턴할 dictionary에서 value에 들어갈 data에 대한 key들의 list.
 
     Returns:
-        dict: _descriptiogene ID와 panel ID의 조합을 key로 하고,
-        target하는 값들의 list를 value로 가진 dictionaryn_
+        dict: gene ID와 panel ID의 조합을 key로 하고,
+        target하는 값들의 list를 value로 가진 dictionary.
     """
     gene_panel_id2panelapp_data = dict()
     for gene_panel_data in gene_panel_datas:
