@@ -72,11 +72,11 @@ def extract_data_by_key(gene_panel_datas: list, panelapp_keys: list) -> dict:
         dict: gene ID와 panel ID의 조합을 key로 하고,
         target하는 값들의 list를 value로 가진 dictionary.
     """
-    gene_panel_id2panelapp_data = dict()
+    entity_panel_id2panelapp_data = dict()
     for gene_panel_data in gene_panel_datas:
-        gene_id = gene_panel_data["gene_data"]["hgnc_id"]
+        entity_id = gene_panel_data["entity_name"]
         panel_id = gene_panel_data["panel"]["id"]
-        gene_panel_id = f"{gene_id}_panel{panel_id}"
+        entity_panel_id = f"{entity_id}_panel{panel_id}"
         panelapp_vals = list()
         for panelapp_key in panelapp_keys:
             if isinstance(panelapp_key, str):
@@ -85,9 +85,9 @@ def extract_data_by_key(gene_panel_datas: list, panelapp_keys: list) -> dict:
                 subkey = list(panelapp_key.keys())[0]
                 for subval in list(panelapp_key.values())[0]:
                     panelapp_vals.append(gene_panel_data[subkey][subval])
-        gene_panel_id2panelapp_data[gene_panel_id] = panelapp_vals
+        entity_panel_id2panelapp_data[entity_panel_id] = panelapp_vals
 
-    return gene_panel_id2panelapp_data
+    return entity_panel_id2panelapp_data
 
     # for gene_id in gene_id_list:
     #     api_url = make_api_url(api_base_url, "genes", gene_id)
@@ -150,16 +150,39 @@ def extract_data_by_key(gene_panel_datas: list, panelapp_keys: list) -> dict:
     #                             ] = "::".join(ensembl_id_list)
 
 
-def main(config_file):
+def main(config_file: str) -> dict:
+    """PanelApp API URL을 configuration 파일에서 받아서,
+    genomic entity-panel 간 correlation raw 데이터에 대한 dictionary를 리턴하는 main 함수
+
+    Args:
+        config_file (str): configuration 파일 경로.
+
+    Returns:
+        dict: _description_
+    """
     configs = common.read_config_file(config_file)
 
-    api_base_url = configs["panelApp"]["API_URL"]
-    panelapp_keys = configs["Key"]
+    api_base_url = configs["PanelApp"]["API_URL"]
 
     api_url = make_api_url(api_base_url, "genes")
     panelapp_gene_datas = paginated_api_call(api_url)
-    gene_panel_id2panelapp_data = extract_data_by_key(
-        panelapp_gene_datas, panelapp_keys
+    panelapp_gene_keys = configs["Gene_Key"]
+    panelapp_id2gene_data = extract_data_by_key(
+        panelapp_gene_datas, panelapp_gene_keys
     )
 
-    return gene_panel_id2panelapp_data
+    api_url = make_api_url(api_base_url, "strs")
+    panelapp_str_datas = paginated_api_call(api_url)
+    panelapp_str_keys = configs["STR_Key"]
+    panelapp_id2str_data = extract_data_by_key(
+        panelapp_str_datas, panelapp_str_keys
+    )
+
+    api_url = make_api_url(api_base_url, "regions")
+    panelapp_region_datas = paginated_api_call(api_url)
+    panelapp_region_keys = configs["Region_Key"]
+    panelapp_id2region_data = extract_data_by_key(
+        panelapp_region_datas, panelapp_region_keys
+    )
+
+    return panelapp_id2gene_data, panelapp_id2str_data, panelapp_id2region_data

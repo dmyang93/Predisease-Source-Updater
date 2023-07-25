@@ -1,10 +1,10 @@
-panelApp: 
+PanelApp: 
   API_URL: https://panelapp.genomicsengland.co.uk/api/v1
 
-Key:
-  - entity_name
+Gene_Key:
   - gene_data:
     - gene_name
+    - hgnc_id
     - omim_gene
     - alias
     - alias_name
@@ -19,6 +19,56 @@ Key:
   - phenotypes
   - confidence_level
   - mode_of_inheritance
+  - mode_of_pathogenicity
+  - penetrance
+  - evidence
+  - publications
+
+STR_Key:
+  - gene_data:
+    - gene_name
+    - hgnc_id
+    - omim_gene
+    - alias
+    - alias_name
+  - chromosome
+  - grch37_coordinates
+  - grch38_coordinates
+  - normal_repeats
+  - pathogenic_repeats
+  - entity_type
+  - panel:
+    - name
+    - disease_group
+    - disease_sub_group
+    - version_created
+    - relevant_disorders
+    - types
+  - phenotypes
+  - confidence_level
+  - mode_of_inheritance
+  - penetrance
+  - evidence
+  - publications
+
+Region_Key:
+  - verbose_name
+  - entity_type
+  - chromosome
+  - grch38_coordinates
+  - haploinsufficiency_score
+  - triplosensitivity_score
+  - required_overlap_percentage
+  - type_of_variants
+  - panel:
+    - name
+    - disease_group
+    - disease_sub_group
+    - version_created
+    - relevant_disorders
+    - types
+  - phenotypes
+  - confidence_level
   - mode_of_pathogenicity
   - penetrance
   - evidence

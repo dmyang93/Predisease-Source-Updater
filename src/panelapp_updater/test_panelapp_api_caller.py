@@ -57,6 +57,7 @@ def test_paginated_api_call(mock_requests_get):
 def test_extract_data_by_key():
     gene_panel_datas = [
         {
+            "entity_name": "ABCDEF",
             "gene_data": {"hgnc_id": "HGNC:1111"},
             "panel": {"id": 1000},
             "name": "Tony",
@@ -74,11 +75,20 @@ def test_extract_data_by_key():
     panelapp_keys = [
         "name",
         {"hobby": ["game", "weight_training", "waterski"]},
+        {"gene_data": ["hgnc_id"]},
         "major",
         "career",
     ]
     expected = {
-        "HGNC:1111_panel1000": ["Tony", 3, 2, 1, "BI", ["seegene", "3billion"]]
+        "ABCDEF_panel1000": [
+            "Tony",
+            3,
+            2,
+            1,
+            "HGNC:1111",
+            "BI",
+            ["seegene", "3billion"],
+        ]
     }
 
     assert expected == extract_data_by_key(gene_panel_datas, panelapp_keys)

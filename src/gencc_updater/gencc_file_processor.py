@@ -99,10 +99,11 @@ def read_gencc_file(gencc_raw_file: str, gencc_keys: list) -> dict:
 
 
 def main(config_file: str) -> dict:
-    """_summary_
+    """Configuration 파일을 활용해 GenCC 데이터 파일을 다운로드 받아서,
+    gene-phenotype 간 correlation raw 데이터에 대한 dictionary를 리턴하는 main 함수
 
     Args:
-        config_file (str): configuration 파일
+        config_file (str): configuration 파일 경로.
 
     Returns:
         dict: _description_
