@@ -16,6 +16,28 @@ panel_key:
     - number_of_strs
     - number_of_regions
 
+Key:
+  - entity_name
+  - gene_data:
+    - gene_name
+    - omim_gene
+    - alias
+    - alias_name
+  - entity_type
+  - panel:
+    - name
+    - disease_group
+    - disease_sub_group
+    - version_created
+    - relevant_disorders
+    - types
+  - phenotypes
+  - confidence_level
+  - mode_of_inheritance
+  - mode_of_pathogenicity
+  - penetrance
+  - evidence
+  - publications
 
 gene_key:
   - entity_type
