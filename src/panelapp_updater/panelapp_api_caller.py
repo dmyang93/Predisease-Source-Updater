@@ -152,13 +152,15 @@ def extract_data_by_key(gene_panel_datas: list, panelapp_keys: list) -> dict:
 
 def main(config_file: str) -> dict:
     """PanelApp API URL을 configuration 파일에서 받아서,
-    genomic entity-panel 간 correlation raw 데이터에 대한 dictionary를 리턴하는 main 함수
+    genomic entity-panel 간 correlation raw 데이터에 대한 dictionary들을
+    리턴하는 main 함수
 
     Args:
         config_file (str): configuration 파일 경로.
 
     Returns:
-        dict: _description_
+        tuple: gene-panel / STR-panel / region-panel 간 correlation
+        데이터에 대한 dictionary들
     """
     configs = common.read_config_file(config_file)
 

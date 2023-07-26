@@ -92,3 +92,58 @@ def test_extract_data_by_key():
     }
 
     assert expected == extract_data_by_key(gene_panel_datas, panelapp_keys)
+
+
+@mock.patch(
+    "panelapp_api_caller.extract_data_by_key",
+    side_effect=[
+        {"geneid_panelid": ["gene_val1", "gene_val2"]},
+        {"strid_panelid": ["str_val1", "str_val2", "str_val3"]},
+        {"regionid_panelid": ["region_val1", "region_val2"]},
+    ],
+)
+@mock.patch(
+    "panelapp_api_caller.paginated_api_call",
+    side_effect=[
+        {
+            "id": "geneid",
+            "panel_id": "panelid",
+            "gene_key1": "gene_val1",
+            "gene_key2": "gene_val2",
+        },
+        {
+            "id": "strid",
+            "panel_id": "panelid",
+            "str_key1": "str_val1",
+            "str_key2": "str_val2",
+            "str_key3": "str_val3",
+        },
+        {
+            "id": "regionid",
+            "panel_id": "panelid",
+            "region_key1": "region_val1",
+            "region_key2": "region_val2",
+        },
+    ],
+)
+@mock.patch(
+    "common.read_config_file",
+    return_value={
+        "PanelApp": {"API_URL": "https://panelapp.api.co.uk"},
+        "Gene_Key": ["gene_key1", "gene_key2"],
+        "STR_Key": ["str_key1", "str_key2", "str_key3"],
+        "Region_Key": ["region_key1", "region_key2"],
+    },
+)
+def test_main(mock_config, mock_apicall, mock_extract):
+    config_file = "config.yaml"
+    api_base_url = "https://panelapp.api.co.uk"
+    expected = (
+        {"geneid_panelid": ["gene_val1", "gene_val2"]},
+        {"strid_panelid": ["str_val1", "str_val2", "str_val3"]},
+        {"regionid_panelid": ["region_val1", "region_val2"]},
+    )
+
+    assert expected == main(config_file)
+    assert mock_apicall.call_count == 3
+    assert mock_extract.call_count == 3
