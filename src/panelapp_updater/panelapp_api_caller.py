@@ -89,66 +89,6 @@ def extract_data_by_key(gene_panel_datas: list, panelapp_keys: list) -> dict:
 
     return entity_panel_id2panelapp_data
 
-    # for gene_id in gene_id_list:
-    #     api_url = make_api_url(api_base_url, "genes", gene_id)
-    #     gene_dict = api_call(api_url)
-    #     gene_data_list = gene_dict["results"]
-
-    #     for gene_data in gene_data_list:
-    #         panel_id = gene_data["panel"]["id"]
-    #         gene_data_dict[gene_id][panel_id] = dict()
-    #         for gene_key in gene_key_list:
-    #             if isinstance(gene_key, str):
-    #                 if isinstance(gene_data[gene_key], list):
-    #                     gene_data_dict[gene_id][panel_id][gene_key] = "::".join(
-    #                         gene_data[gene_key]
-    #                     )
-    #                 else:
-    #                     gene_data_dict[gene_id][panel_id][gene_key] = gene_data[
-    #                         gene_key
-    #                     ]
-    #             else:
-    #                 k, v = list(gene_key.items())[0]
-    #                 if isinstance(v, str):
-    #                     gene_data_dict[gene_id][panel_id][
-    #                         f"{k}_{v}"
-    #                     ] = gene_data[k][v]
-    #                 else:
-    #                     for subkey in v:
-    #                         if isinstance(gene_data[k][subkey], str):
-    #                             gene_data_dict[gene_id][panel_id][
-    #                                 subkey
-    #                             ] = gene_data[k][subkey]
-    #                         elif isinstance(gene_data[k][subkey], list):
-    #                             gene_data_dict[gene_id][panel_id][
-    #                                 subkey
-    #                             ] = "::".join(gene_data[k][subkey])
-    #                         elif gene_data[k][subkey] is None:
-    #                             gene_data_dict[gene_id][panel_id][subkey] = ""
-    #                         else:
-    #                             ensembl_id_list = list()
-    #                             try:
-    #                                 ensembl_id_37 = list(
-    #                                     gene_data[k][subkey]["GRch37"].values()
-    #                                 )[0]["ensembl_id"]
-    #                                 ensembl_id_list.append(
-    #                                     f"GRch37_{ensembl_id_37}"
-    #                                 )
-    #                             except KeyError:
-    #                                 pass
-    #                             try:
-    #                                 ensembl_id_38 = list(
-    #                                     gene_data[k][subkey]["GRch38"].values()
-    #                                 )[0]["ensembl_id"]
-    #                                 ensembl_id_list.append(
-    #                                     f"GRch38_{ensembl_id_38}"
-    #                                 )
-    #                             except KeyError:
-    #                                 pass
-    #                             gene_data_dict[gene_id][panel_id][
-    #                                 subkey
-    #                             ] = "::".join(ensembl_id_list)
-
 
 def main(config_file: str) -> dict:
     """PanelApp API URL을 configuration 파일에서 받아서,
