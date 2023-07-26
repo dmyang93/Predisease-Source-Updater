@@ -137,7 +137,6 @@ def test_extract_data_by_key():
 )
 def test_main(mock_config, mock_apicall, mock_extract):
     config_file = "config.yaml"
-    api_base_url = "https://panelapp.api.co.uk"
     expected = (
         {"geneid_panelid": ["gene_val1", "gene_val2"]},
         {"strid_panelid": ["str_val1", "str_val2", "str_val3"]},
