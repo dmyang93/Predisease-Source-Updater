@@ -1,3 +1,4 @@
 */tmp*.py
 .vscode/*
-*pycache*
+*/__pycache__/*
+*/*/__pycache__/*
