@@ -1,4 +1,5 @@
 import yaml
+import logging
 
 
 def read_config_file(config_file_path: str) -> dict:
@@ -14,3 +15,16 @@ def read_config_file(config_file_path: str) -> dict:
         config = yaml.load(config_open, Loader=yaml.FullLoader)
 
     return config
+
+
+def get_logger(log_file_path: str):
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
+    file_handler = logging.FileHandler(log_file_path)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+
+    return logger

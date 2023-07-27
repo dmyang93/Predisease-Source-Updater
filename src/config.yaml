@@ -1,0 +1,91 @@
+GenCC:
+  download_url: https://search.thegencc.org/download/action/submissions-export-tsv
+  Key:
+    - gene_curie
+    - gene_symbol
+    - disease_curie
+    - disease_title
+    - disease_original_curie
+    - disease_original_title
+    - classification_curie
+    - classification_title
+    - submitted_as_date
+    - submitted_as_public_report_url
+    - submitted_as_notes
+    - submitted_as_pmids
+    - submitted_as_assertion_criteria_url
+    - submitted_run_date
+
+PanelApp: 
+  API_URL: https://panelapp.genomicsengland.co.uk/api/v1
+  Key:
+    genes:
+      - gene_data:
+        - gene_name
+        - hgnc_id
+        - omim_gene
+        - alias
+        - alias_name
+      - entity_type
+      - panel:
+        - name
+        - disease_group
+        - disease_sub_group
+        - version_created
+        - relevant_disorders
+        - types
+      - phenotypes
+      - confidence_level
+      - mode_of_inheritance
+      - mode_of_pathogenicity
+      - penetrance
+      - evidence
+      - publications
+    strs:
+      - gene_data:
+        - gene_name
+        - hgnc_id
+        - omim_gene
+        - alias
+        - alias_name
+      - chromosome
+      - grch37_coordinates
+      - grch38_coordinates
+      - normal_repeats
+      - pathogenic_repeats
+      - entity_type
+      - panel:
+        - name
+        - disease_group
+        - disease_sub_group
+        - version_created
+        - relevant_disorders
+        - types
+      - phenotypes
+      - confidence_level
+      - mode_of_inheritance
+      - penetrance
+      - evidence
+      - publications
+    regions:
+      - verbose_name
+      - entity_type
+      - chromosome
+      - grch38_coordinates
+      - haploinsufficiency_score
+      - triplosensitivity_score
+      - required_overlap_percentage
+      - type_of_variants
+      - panel:
+        - name
+        - disease_group
+        - disease_sub_group
+        - version_created
+        - relevant_disorders
+        - types
+      - phenotypes
+      - confidence_level
+      - mode_of_pathogenicity
+      - penetrance
+      - evidence
+      - publications
