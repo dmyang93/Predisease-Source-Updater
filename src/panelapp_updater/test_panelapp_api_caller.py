@@ -1,25 +1,10 @@
-import pytest
 from unittest import mock
 
 from panelapp_api_caller import *
 
 
-@pytest.mark.parametrize(
-    "api_base_url,path,expected",
-    [
-        (
-            "https://panelapp.genomicsengland.co.uk/api/v1",
-            "genes",
-            "https://panelapp.genomicsengland.co.uk/api/v1/genes",
-        ),
-    ],
-)
-def test_make_api_url(api_base_url, path, expected):
-    assert expected == make_api_url(api_base_url, path)
-
-
 @mock.patch("requests.get")
-def test_api_call(mock_requests_get):
+def test_call_api(mock_requests_get):
     mock_requests_get.return_value.json.return_value = {
         "a": 1,
         "b": [1, 2, 3],
@@ -28,11 +13,11 @@ def test_api_call(mock_requests_get):
     api_url = "https://panelapp.genomicsengland.co.uk/api/v1/genes"
     expected = {"a": 1, "b": [1, 2, 3], "c": None}
 
-    assert expected == api_call(api_url)
+    assert expected == call_api(api_url)
 
 
 @mock.patch("requests.get")
-def test_paginated_api_call(mock_requests_get):
+def test_call_paginated_api(mock_requests_get):
     mock_requests_get.return_value.json.side_effect = [
         {
             "count": 2,
@@ -51,11 +36,11 @@ def test_paginated_api_call(mock_requests_get):
         {"a": 4, "b": [5, 6, 7], "c": "qwer"},
     ]
 
-    assert expected == paginated_api_call(api_url)
+    assert expected == call_paginated_api(api_url)
 
 
 def test_extract_data_by_key():
-    gene_panel_datas = [
+    submitted_data = [
         {
             "entity_name": "ABCDEF",
             "gene_data": {"hgnc_id": "HGNC:1111"},
@@ -91,7 +76,7 @@ def test_extract_data_by_key():
         ]
     }
 
-    assert expected == extract_data_by_key(gene_panel_datas, panelapp_keys)
+    assert expected == extract_data_by_key(submitted_data, panelapp_keys)
 
 
 @mock.patch(
@@ -103,7 +88,7 @@ def test_extract_data_by_key():
     ],
 )
 @mock.patch(
-    "panelapp_api_caller.paginated_api_call",
+    "panelapp_api_caller.call_paginated_api",
     side_effect=[
         {
             "id": "geneid",
@@ -127,7 +112,7 @@ def test_extract_data_by_key():
     ],
 )
 @mock.patch(
-    "common.read_config_file",
+    "panelapp_api_caller.read_config_file",
     return_value={
         "PanelApp": {"API_URL": "https://panelapp.api.co.uk"},
         "Gene_Key": ["gene_key1", "gene_key2"],
@@ -136,13 +121,13 @@ def test_extract_data_by_key():
     },
 )
 def test_main(mock_config, mock_apicall, mock_extract):
-    config_file = "config.yaml"
+    config_file_path = "config.yaml"
     expected = (
         {"geneid_panelid": ["gene_val1", "gene_val2"]},
         {"strid_panelid": ["str_val1", "str_val2", "str_val3"]},
         {"regionid_panelid": ["region_val1", "region_val2"]},
     )
 
-    assert expected == main(config_file)
+    assert expected == main(config_file_path)
     assert mock_apicall.call_count == 3
     assert mock_extract.call_count == 3
