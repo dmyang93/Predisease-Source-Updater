@@ -28,4 +28,4 @@ def test_read_config_file(mock_opener):
 
 
 def test_get_logger():
-    
+    pass
