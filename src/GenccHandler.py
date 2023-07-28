@@ -12,6 +12,7 @@ class GenccHandler:
         self.logger = get_logger(log_file_path)
         self.config = config["GenCC"]
         self.raw_file_path = os.path.join(output_dir, "gencc_submission.tsv")
+        self.logger.info("GenCC data update is started")
 
     def trim_line(self, split_lines: list) -> list:
         """Trim words in list

@@ -5,10 +5,26 @@ from PanelappHandler import PanelappHandler
 
 
 def main(log_file_path, config_file_path, output_dir):
+    """External source로부터 data를 받고, 정리하고, 통합하는 함수
+
+    Args:
+        log_file_path (str): log 파일 경로.
+        config_file_path (str): configuration 파일 경로.
+        output_dir (str): 다운로드된 파일 저장 장소.
+
+    Note:
+        External source:
+            1) GenCC
+            2) PanelApp
+    """
+    # GenCC
     gencc_handler = GenccHandler(log_file_path, config_file_path, output_dir)
     panelapp_handler = PanelappHandler(log_file_path, config_file_path)
 
     gencc_handler.download_raw_file()
+
+    # PanelApp
+    panelapp_handler = PanelappHandler(log_file_path, config_file_path)
     uuid2gencc_data = gencc_handler.read_raw_file()
 
     entity = "genes"
