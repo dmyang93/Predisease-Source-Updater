@@ -25,6 +25,7 @@ class PanelappHandler:
         """
         api_url = self.config["API_URL"]
         api_url = os.path.join(api_url, additional_url_path)
+        self.logger.info(f"API Call URL: {api_url}")
 
         trial, max_trial = 1, 3
         while trial <= max_trial:
@@ -63,7 +64,10 @@ class PanelappHandler:
 
         while panelapp_api_data["next"] is not None:
             next_api_url = panelapp_api_data["next"]
-            panelapp_api_data = self.call_api(next_api_url)
+            additional_api_url = os.path.join(
+                entity, os.path.basename(next_api_url)
+            )
+            panelapp_api_data = self.call_api(additional_api_url)
             entity_panel_data.extend(panelapp_api_data["results"])
 
         self.logger.info("PanelApp data is downloaded.")
