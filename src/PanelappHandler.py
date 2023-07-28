@@ -1,4 +1,5 @@
 import os
+import time
 import requests
 
 from common import read_config_file, get_logger
@@ -18,10 +19,29 @@ class PanelappHandler:
 
         Returns:
             (dict): API response로 받은 json 포맷 dictionary.
+
+        Note:
+            API call은 10초 간격으로 3번까지 시도한 후, 1시간 뒤에 마지막으로 1번 더 시도한다.
         """
         api_url = self.config["API_URL"]
         api_url = os.path.join(api_url, additional_url_path)
-        response = requests.get(api_url)
+
+        trial, max_trial = 1, 3
+        while trial <= max_trial:
+            response = requests.get(api_url)
+            if response.status_code == 200:
+                break
+            time.sleep(10)
+            trial += 1
+
+        if response.status_code != 200:
+            time.sleep(3600)
+            response = requests.get(api_url)
+            if response.status_code != 200:
+                self.logger.error("PanelApp data is not downloaded.")
+                self.logger.error(f"Failed API URL: {api_url}")
+                raise
+
         panelapp_api_data = response.json()
 
         return panelapp_api_data
@@ -45,6 +65,8 @@ class PanelappHandler:
             next_api_url = panelapp_api_data["next"]
             panelapp_api_data = self.call_api(next_api_url)
             entity_panel_data.extend(panelapp_api_data["results"])
+
+        self.logger.info("PanelApp data is downloaded.")
 
         return entity_panel_data
 
@@ -112,5 +134,9 @@ class PanelappHandler:
                         panelapp_vals.append(submitted_datum[subkey][subval])
 
             entity_panel_id2panelapp_data[entity_panel_id] = panelapp_vals
+        self.logger.info(
+            f"Total count of PanelApp {entity} data: "
+            f"{len(entity_panel_id2panelapp_data)}"
+        )
 
         return entity_panel_id2panelapp_data

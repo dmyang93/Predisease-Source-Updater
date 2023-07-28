@@ -38,8 +38,12 @@ def test_trim_line(mock_gencchandler, split_lines, expected):
     assert expected == mock_gencchandler.trim_line(split_lines)
 
 
-@mock.patch("os.system")
-def test_download_raw_file(mock_os_system, mock_gencchandler):
+@mock.patch("os.path.exists")
+@mock.patch("time.sleep")
+@mock.patch("os.system", return_value=0)
+def test_download_raw_file(
+    mock_os_system, mock_time_sleep, mock_os_path_exsits, mock_gencchandler
+):
     expected_url = mock_gencchandler.config["download_url"]
     expected = f"wget -O {mock_gencchandler.raw_file_path} {expected_url}"
 

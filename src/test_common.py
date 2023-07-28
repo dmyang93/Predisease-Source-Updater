@@ -25,3 +25,7 @@ def test_read_config_file(mock_opener):
     }
 
     assert expected == read_config_file(config_file)
+
+
+def test_get_logger():
+    

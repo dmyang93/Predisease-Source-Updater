@@ -32,6 +32,7 @@ def mock_panelapphandler(mock_config, mock_logger):
 
 @mock.patch("requests.get")
 def test_call_api(mock_requests_get, mock_panelapphandler):
+    mock_requests_get.return_value.status_code = 200
     expected = "https://panelapp.api.co.uk/genes"
     mock_panelapphandler.call_api("genes")
     mock_requests_get.assert_called_with(expected)
@@ -39,6 +40,7 @@ def test_call_api(mock_requests_get, mock_panelapphandler):
 
 @mock.patch("requests.get")
 def test_call_paginated_api(mock_requests_get, mock_panelapphandler):
+    mock_requests_get.return_value.status_code = 200
     mock_requests_get.return_value.json.side_effect = [
         {
             "count": 2,

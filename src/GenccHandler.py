@@ -1,4 +1,5 @@
 import os
+import time
 
 from common import read_config_file, get_logger
 
@@ -54,10 +55,28 @@ class GenccHandler:
         """wget을 이용해 GenCC data raw file을 정해진 디렉토리에 다운로드받고, \
             그 파일의 절대 경로를 리턴하는 함수
             
+            Note:
+                파일 다운로드는 10초 간격으로 3번까지 시도한 후, 1시간 뒤에 마지막으로 1번 더 시도한다.
+            
         """
         gencc_download_url = self.config["download_url"]
         download_command = f"wget -O {self.raw_file_path} {gencc_download_url}"
-        os.system(download_command)
+
+        trial, max_trial = 1, 3
+        while trial <= max_trial:
+            if os.system(download_command) == 0:
+                break
+            time.sleep(10)
+            trial += 1
+
+        if not os.path.exists(self.raw_file_path):
+            time.sleep(3600)
+            if os.system(download_command) != 0:
+                self.logger.error("GenCC data file is not downloaded.")
+                self.logger.error(f"GenCC download URL: {gencc_download_url}")
+                raise
+
+        self.logger.info("GenCC data file is downloaded.")
 
     def read_raw_file(self) -> dict:
         """GenCC tsv 파일을 읽어서 trim한 뒤, \
@@ -89,6 +108,7 @@ class GenccHandler:
                 "GENCC": ["phenotype_1174", "gene_xs", "weak]
             }
         """
+        self.logger.info("GenCC data file is read.")
         uuid2gencc_data = dict()
         with open(self.raw_file_path) as file_open:
             for line in file_open:
@@ -119,5 +139,7 @@ class GenccHandler:
             uuid = new_split_lines[0]
             data = [new_split_lines[idx] for idx in key_indexes]
             uuid2gencc_data[uuid] = data
+
+        self.logger.info(f"Total count of GenCC data: {len(uuid2gencc_data)}")
 
         return uuid2gencc_data
