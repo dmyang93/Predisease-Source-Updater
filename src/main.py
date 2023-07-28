@@ -1,3 +1,4 @@
+import os
 import argparse
 
 from GenccHandler import GenccHandler
@@ -10,13 +11,15 @@ def main(log_file_path, config_file_path, output_dir):
     Args:
         log_file_path (str): log 파일 경로.
         config_file_path (str): configuration 파일 경로.
-        output_dir (str): 다운로드된 파일 저장 장소.
+        output_dir (str): 다운로드된 파일 저장 디렉토리 경로.
 
     Note:
         External source:
             1) GenCC
             2) PanelApp
     """
+    os.makedirs(output_dir, exist_ok=True)
+
     # GenCC
     gencc_handler = GenccHandler(log_file_path, config_file_path, output_dir)
     panelapp_handler = PanelappHandler(log_file_path, config_file_path)
