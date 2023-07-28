@@ -22,13 +22,12 @@ def main(log_file_path, config_file_path, output_dir):
 
     # GenCC
     gencc_handler = GenccHandler(log_file_path, config_file_path, output_dir)
-    panelapp_handler = PanelappHandler(log_file_path, config_file_path)
 
     gencc_handler.download_raw_file()
+    uuid2gencc_data = gencc_handler.read_raw_file()
 
     # PanelApp
     panelapp_handler = PanelappHandler(log_file_path, config_file_path)
-    uuid2gencc_data = gencc_handler.read_raw_file()
 
     entity = "genes"
     panelapp_gene_data = panelapp_handler.call_paginated_api(entity)

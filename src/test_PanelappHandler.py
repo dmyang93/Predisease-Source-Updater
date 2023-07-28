@@ -43,19 +43,25 @@ def test_call_paginated_api(mock_requests_get, mock_panelapphandler):
     mock_requests_get.return_value.status_code = 200
     mock_requests_get.return_value.json.side_effect = [
         {
-            "count": 2,
+            "count": 3,
             "next": "https://panelapp.genomicsengland.co.uk/api/v1/genes/2",
             "results": [{"a": 1, "b": [1, 2, 3], "c": None}],
         },
         {
-            "count": 2,
-            "next": None,
+            "count": 3,
+            "next": "https://panelapp.genomicsengland.co.uk/api/v1/genes/3",
             "results": [{"a": 4, "b": [5, 6, 7], "c": "qwer"}],
+        },
+        {
+            "count": 3,
+            "next": None,
+            "results": [{"a": 2, "b": [0, 10, 20], "c": "jkl"}],
         },
     ]
     expected = [
         {"a": 1, "b": [1, 2, 3], "c": None},
         {"a": 4, "b": [5, 6, 7], "c": "qwer"},
+        {"a": 2, "b": [0, 10, 20], "c": "jkl"},
     ]
 
     assert expected == mock_panelapphandler.call_paginated_api("genes")
