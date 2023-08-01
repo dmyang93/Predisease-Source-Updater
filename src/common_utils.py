@@ -18,6 +18,14 @@ def read_config_file(config_file_path: str) -> dict:
 
 
 def get_logger(log_file_path: str):
+    """logger를 만들고 포맷팅해주는 함수
+
+    Args:
+        log_file_path (str): log 파일 경로
+
+    Returns:
+        (Logger): logger object
+    """
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
     formatter = logging.Formatter(
