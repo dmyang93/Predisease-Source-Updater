@@ -61,11 +61,11 @@ def main(log_file_path: str, config_file_path: str, output_dir: str):
         panelapp_data.append(panelapp_id2entity_data)
 
 
-# if __name__ == "__main__":
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument("--log_file_path", "-l")
-#     parser.add_argument("--config_file_path", "-c")
-#     parser.add_argument("--output_dir", "-o")
-#     args = parser.parse_args()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--log_file_path", "-l")
+    parser.add_argument("--config_file_path", "-c")
+    parser.add_argument("--output_dir", "-o")
+    args = parser.parse_args()
 
-#     main(args.log_file_path, args.config_file_path, args.output_dir)
+    main(args.log_file_path, args.config_file_path, args.output_dir)
