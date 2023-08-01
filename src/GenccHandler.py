@@ -1,18 +1,16 @@
 import os
 import time
+from logging import Logger
 
-from common import read_config_file, get_logger
+from common_utils import read_config_file
 
 
 class GenccHandler:
-    def __init__(
-        self, log_file_path: str, config_file_path: str, output_dir: str
-    ):
+    def __init__(self, logger: Logger, config_file_path: str, output_dir: str):
         config = read_config_file(config_file_path)
-        self.logger = get_logger(log_file_path)
+        self.logger = logger
         self.config = config["GenCC"]
         self.raw_file_path = os.path.join(output_dir, "gencc_submission.tsv")
-        self.logger.info("GenCC data update is started")
 
     def trim_line(self, split_lines: list) -> list:
         """Trim words in list
@@ -56,8 +54,8 @@ class GenccHandler:
         """wget을 이용해 GenCC data raw file을 정해진 디렉토리에 다운로드받고, \
             그 파일의 절대 경로를 리턴하는 함수
             
-            Note:
-                파일 다운로드는 10초 간격으로 3번까지 시도한 후, 1시간 뒤에 마지막으로 1번 더 시도한다.
+        Note:
+            파일 다운로드는 10초 간격으로 3번까지 시도한 후, 1시간 뒤에 마지막으로 1번 더 시도한다.
             
         """
         gencc_download_url = self.config["download_url"]
@@ -77,7 +75,7 @@ class GenccHandler:
                 self.logger.error(f"GenCC download URL: {gencc_download_url}")
                 raise
 
-        self.logger.info("GenCC data file is downloaded.")
+        return
 
     def read_raw_file(self) -> dict:
         """GenCC tsv 파일을 읽어서 trim한 뒤, \
@@ -109,7 +107,6 @@ class GenccHandler:
                 "GENCC": ["phenotype_1174", "gene_xs", "weak]
             }
         """
-        self.logger.info("GenCC data file is read.")
         uuid2gencc_data = dict()
         with open(self.raw_file_path) as file_open:
             for line in file_open:
@@ -121,6 +118,7 @@ class GenccHandler:
                         for gencc_key in self.config["Key"]
                     ]
                     new_split_lines = list()
+
                 elif line.startswith('"GENCC'):
                     if new_split_lines:
                         uuid = new_split_lines[0]
@@ -128,6 +126,7 @@ class GenccHandler:
                         uuid2gencc_data[uuid] = data
                     split_lines = line.strip().split('"\t"')
                     new_split_lines = self.trim_line(split_lines)
+
                 else:
                     split_lines = line.strip().split('"\t"')
                     tmp_split_lines = self.trim_line(split_lines)
@@ -137,10 +136,9 @@ class GenccHandler:
                         new_split_lines[-1] += f";{tmp_split_lines[0]}"
                     if len(split_lines) != 1:
                         new_split_lines.extend(tmp_split_lines[1:])
+
             uuid = new_split_lines[0]
             data = [new_split_lines[idx] for idx in key_indexes]
             uuid2gencc_data[uuid] = data
-
-        self.logger.info(f"Total count of GenCC data: {len(uuid2gencc_data)}")
 
         return uuid2gencc_data

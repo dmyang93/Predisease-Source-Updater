@@ -1,11 +1,12 @@
 import os
 import argparse
 
+from common_utils import get_logger
 from GenccHandler import GenccHandler
 from PanelappHandler import PanelappHandler
 
 
-def main(log_file_path, config_file_path, output_dir):
+def main(log_file_path: str, config_file_path: str, output_dir: str):
     """External source로부터 data를 받고, 정리하고, 통합하는 함수
 
     Args:
@@ -19,38 +20,52 @@ def main(log_file_path, config_file_path, output_dir):
             2) PanelApp
     """
     os.makedirs(output_dir, exist_ok=True)
+    logger = get_logger(log_file_path)
+    logger.info("0. Predisease-Source-Updater starts.")
+    logger.info(f"   Output directory: {output_dir}")
 
     # GenCC
-    gencc_handler = GenccHandler(log_file_path, config_file_path, output_dir)
+    gencc_handler = GenccHandler(logger, config_file_path, output_dir)
+    logger.info("1. GenCC data update starts.")
 
+    logger.info("1.1. GenCC raw data file download starts.")
     gencc_handler.download_raw_file()
+    logger.info(f"     GenCC raw data file path: {gencc_handler.raw_file_path}")
+
+    logger.info("1.2. GenCC raw data file is read.")
     uuid2gencc_data = gencc_handler.read_raw_file()
+    logger.info(f"     Total count of GenCC data: {len(uuid2gencc_data)}")
 
     # PanelApp
-    panelapp_handler = PanelappHandler(log_file_path, config_file_path)
+    panelapp_handler = PanelappHandler(logger, config_file_path, output_dir)
+    logger.info("2. PanelApp data update starts.")
 
-    entity = "genes"
-    panelapp_gene_data = panelapp_handler.call_paginated_api(entity)
-    panelapp_id2gene_data = panelapp_handler.extract_data_by_key(
-        panelapp_gene_data, entity
-    )
-    entity = "strs"
-    panelapp_str_data = panelapp_handler.call_paginated_api("strs")
-    panelapp_id2str_data = panelapp_handler.extract_data_by_key(
-        panelapp_str_data, entity
-    )
-    entity = "regions"
-    panelapp_region_data = panelapp_handler.call_paginated_api(entity)
-    panelapp_id2region_data = panelapp_handler.extract_data_by_key(
-        panelapp_region_data, entity
-    )
+    entities = ["genes", "strs", "regions"]
+    panelapp_data = list()
+    for idx, entity in enumerate(entities, start=1):
+        logger.info(f"2.{idx}. PanelApp {entity} data.")
+
+        logger.info(
+            f"2.{idx}.1. PanelApp {entity} data by API response download starts."
+        )
+        panelapp_entity_data = panelapp_handler.call_paginated_api(entity)
+        logger.info(f"       PanelApp {entity} data is downloaded.")
+
+        logger.info(f"2.{idx}.2. PanelApp {entity} data is read.")
+        panelapp_id2entity_data = panelapp_handler.extract_data_by_key(
+            panelapp_entity_data, entity
+        )
+        logger.info(
+            f"       Total count of PanelApp {entity} data: {len(panelapp_id2entity_data)}"
+        )
+        panelapp_data.append(panelapp_id2entity_data)
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--log_file_path", "-l")
-    parser.add_argument("--config_file_path", "-c")
-    parser.add_argument("--output_dir", "-o")
-    args = parser.parse_args()
+# if __name__ == "__main__":
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument("--log_file_path", "-l")
+#     parser.add_argument("--config_file_path", "-c")
+#     parser.add_argument("--output_dir", "-o")
+#     args = parser.parse_args()
 
-    main(args.log_file_path, args.config_file_path, args.output_dir)
+#     main(args.log_file_path, args.config_file_path, args.output_dir)

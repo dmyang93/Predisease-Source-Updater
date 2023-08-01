@@ -5,7 +5,6 @@ from GenccHandler import GenccHandler
 
 
 @pytest.fixture
-@mock.patch("GenccHandler.get_logger")
 @mock.patch(
     "GenccHandler.read_config_file",
     return_value={
@@ -15,7 +14,7 @@ from GenccHandler import GenccHandler
         }
     },
 )
-def mock_gencchandler(mock_config, mock_logger):
+def mock_gencchandler(mock_config):
     gencc_handler = GenccHandler("log.txt", "config.yaml", "path/to/download")
 
     return gencc_handler

@@ -5,7 +5,6 @@ from PanelappHandler import PanelappHandler
 
 
 @pytest.fixture
-@mock.patch("PanelappHandler.get_logger")
 @mock.patch(
     "PanelappHandler.read_config_file",
     return_value=(
@@ -24,8 +23,10 @@ from PanelappHandler import PanelappHandler
         }
     ),
 )
-def mock_panelapphandler(mock_config, mock_logger):
-    panelapp_handler = PanelappHandler("log.txt", "config.yaml")
+def mock_panelapphandler(mock_config):
+    panelapp_handler = PanelappHandler(
+        "log.txt", "config.yaml", "path/to/output"
+    )
 
     return panelapp_handler
 
@@ -38,8 +39,9 @@ def test_call_api(mock_requests_get, mock_panelapphandler):
     mock_requests_get.assert_called_with(expected)
 
 
+@mock.patch("builtins.open", new_callable=mock.mock_open)
 @mock.patch("requests.get")
-def test_call_paginated_api(mock_requests_get, mock_panelapphandler):
+def test_call_paginated_api(mock_requests_get, mock_open, mock_panelapphandler):
     mock_requests_get.return_value.status_code = 200
     mock_requests_get.return_value.json.side_effect = [
         {

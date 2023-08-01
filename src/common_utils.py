@@ -21,9 +21,11 @@ def get_logger(log_file_path: str):
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
     formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        "%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s"
     )
-    file_handler = logging.FileHandler(log_file_path)
+    file_handler = logging.FileHandler(
+        log_file_path,
+    )
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 

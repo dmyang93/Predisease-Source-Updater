@@ -1,17 +1,20 @@
 import os
 import time
+import json
 import requests
+from logging import Logger
 
-from common import read_config_file, get_logger
+from common_utils import read_config_file
 
 
 class PanelappHandler:
-    def __init__(self, log_file_path: str, config_file_path: str):
+    def __init__(self, logger: Logger, config_file_path: str, output_dir: str):
         config = read_config_file(config_file_path)
-        self.logger = get_logger(log_file_path)
+        self.logger = logger
         self.config = config["PanelApp"]
+        self.output_dir = output_dir
 
-    def call_api(self, additional_url_path):
+    def call_api(self, additional_url_path: str) -> dict:
         """API call
 
         Args:
@@ -25,7 +28,6 @@ class PanelappHandler:
         """
         api_url = self.config["API_URL"]
         api_url = os.path.join(api_url, additional_url_path)
-        self.logger.info(f"API Call URL: {api_url}")
 
         trial, max_trial = 1, 3
         while trial <= max_trial:
@@ -57,6 +59,9 @@ class PanelappHandler:
 
         Returns:
             (list): API response dictionary에서 'result' key의 value들만 모아놓은 list.
+            
+        Note:
+            result 값을 모두 합쳐 json 파일에 write를 한다.
         """
         entity_panel_data = list()
         panelapp_api_data = self.call_api(entity)
@@ -70,7 +75,17 @@ class PanelappHandler:
             panelapp_api_data = self.call_api(additional_api_url)
             entity_panel_data.extend(panelapp_api_data["results"])
 
-        self.logger.info("PanelApp data is downloaded.")
+        entity_panel_data4json = dict()
+        entity_panel_data4json["results"] = entity_panel_data
+        entity_panel_data_json_path = os.path.join(
+            self.output_dir, f"panelapp_{entity}.json"
+        )
+        with open(
+            entity_panel_data_json_path, "w", encoding="utf-8"
+        ) as json_write:
+            json.dump(
+                entity_panel_data4json, json_write, ensure_ascii=False, indent=4
+            )
 
         return entity_panel_data
 
@@ -138,9 +153,5 @@ class PanelappHandler:
                         panelapp_vals.append(submitted_datum[subkey][subval])
 
             entity_panel_id2panelapp_data[entity_panel_id] = panelapp_vals
-        self.logger.info(
-            f"Total count of PanelApp {entity} data: "
-            f"{len(entity_panel_id2panelapp_data)}"
-        )
 
         return entity_panel_id2panelapp_data
