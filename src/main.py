@@ -4,6 +4,7 @@ import argparse
 from common_utils import get_logger
 from GenccHandler import GenccHandler
 from PanelappHandler import PanelappHandler
+from MondoHandler import MondoHandler
 
 
 def main(log_file_path: str, config_file_path: str, output_dir: str):
@@ -23,6 +24,12 @@ def main(log_file_path: str, config_file_path: str, output_dir: str):
     logger = get_logger(log_file_path)
     logger.info("0. Predisease-Source-Updater starts.")
     logger.info(f"   Output directory: {output_dir}")
+
+    # MONDO
+    mondo_handler = MondoHandler(logger, config_file_path, output_dir)
+    mondo_handler.download_files()
+    mondo_id2omim_id = mondo_handler.read_files("omim")
+    mondo_id2orpha_id = mondo_handler.read_files("orphanet")
 
     # GenCC
     gencc_handler = GenccHandler(logger, config_file_path, output_dir)
