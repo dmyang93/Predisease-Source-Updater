@@ -38,3 +38,30 @@ def get_logger(log_file_path: str):
     logger.addHandler(file_handler)
 
     return logger
+
+
+def read_mondo_file(mondo_file_path: str) -> dict:
+    headers = [
+        "class_label",
+        "synonyms",
+        "GARD",
+        "NCIT",
+        "OMIM",
+        "DOID",
+        "Orphanet",
+    ]
+
+    mondo_id2data = dict()
+    with open(mondo_file_path) as mondo_open:
+        for line in mondo_open:
+            if line.startswith("class"):
+                header_lines = line.strip().split("\t")
+                indexes = [header_lines.index(header) for header in headers]
+            else:
+                data_lines = line.strip().split("\t")
+                mondo_id = data_lines[0]
+                mondo_id2data[mondo_id] = dict()
+                for idx in indexes:
+                    mondo_id2data[mondo_id][header_lines[idx]] = data_lines[idx]
+
+    return mondo_id2data
