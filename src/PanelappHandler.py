@@ -26,8 +26,7 @@ class PanelappHandler:
         Note:
             API call은 10초 간격으로 3번까지 시도한 후, 1시간 뒤에 마지막으로 1번 더 시도한다.
         """
-        api_url = self.config["API_URL"]
-        api_url = os.path.join(api_url, additional_url_path)
+        api_url = os.path.join(self.config["API_URL"], additional_url_path)
 
         trial, max_trial = 1, 3
         while trial <= max_trial:
@@ -43,7 +42,9 @@ class PanelappHandler:
             if response.status_code != 200:
                 self.logger.error("PanelApp data is not downloaded.")
                 self.logger.error(f"Failed API URL: {api_url}")
-                raise
+                raise Exception(
+                    f"APIError: {response.status_code} {response.reason}"
+                )
 
         panelapp_api_data = response.json()
 

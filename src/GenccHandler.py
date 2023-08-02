@@ -50,7 +50,7 @@ class GenccHandler:
 
         return new_split_lines
 
-    def download_raw_file(self) -> str:
+    def download_raw_file(self):
         """wget을 이용해 GenCC data raw file을 정해진 디렉토리에 다운로드받고, \
             그 파일의 절대 경로를 리턴하는 함수
             
@@ -73,7 +73,7 @@ class GenccHandler:
             if os.system(download_command) != 0:
                 self.logger.error("GenCC data file is not downloaded.")
                 self.logger.error(f"GenCC download URL: {gencc_download_url}")
-                raise
+                raise Exception("WgetError")
 
         return
 
@@ -96,7 +96,9 @@ class GenccHandler:
                 "\"uuid\"\t\"gene_name\"\t\"phenotype_name\"\t\"confidence\"\n", 
                 "\"GENCC1\"\t\"gene_aa\"\t\"phenotype_8503\"\t\"strong\"\n",
                 "\"GENCC2\"\t\"gene_kc\"\t\"phenotype_0239\"\t\"moderate\"\n", 
-                "\"GENCC3\"\t\"gene_xs\"\t\"phenotype_1174\"\t\"weak\"\n"
+                "\"GENCC3\"\t\"gene_xs\"\t\"phenotype_1174\"\t\"weak\"\n", 
+                "\"GENCC4\"\t\"gene_lp\"\t\"phenotype_9065\n"
+                "additional_blah_blah\"\t\"strong\"\n\"
             ]
             >>> self.config["Key"]
             ["phtenotye_name", "gene_name", "confidence"]
@@ -104,7 +106,8 @@ class GenccHandler:
             {
                 "GENCC1": ["phenotype_8503", "gene_aa", "strong"], 
                 "GENCC2": ["phenotype_0239", "gene_kc", "moderate"], 
-                "GENCC": ["phenotype_1174", "gene_xs", "weak]
+                "GENCC3": ["phenotype_1174", "gene_xs", "weak],
+                "GENCC4": ["phenotype_9065additional_blah_blah", "gene_lp", "strong"]
             }
         """
         uuid2gencc_data = dict()
