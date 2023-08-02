@@ -9,6 +9,10 @@ GenCC:
     - disease_original_title
     - classification_curie
     - classification_title
+    - moi_curie
+    - moi_title
+    - submitter_curie
+    - submitter_title"
     - submitted_as_date
     - submitted_as_public_report_url
     - submitted_as_notes
@@ -23,6 +27,7 @@ PanelApp:
       - gene_data:
         - gene_name
         - hgnc_id
+        - hgnc_symbol
         - omim_gene
         - alias
         - alias_name
@@ -89,3 +94,18 @@ PanelApp:
       - penetrance
       - evidence
       - publications
+
+MONDO:
+  download_url: https://raw.githubusercontent.com/monarch-initiative/mondo/master/src/ontology/mappings
+  file_list:
+    - mondo_broadmatch_orphanet.sssom.tsv
+    - mondo_closematch_omim.sssom.tsv
+    - mondo_closematch_orphanet.sssom.tsv
+    - mondo_exactmatch_omim.sssom.tsv
+    - mondo_exactmatch_orphanet.sssom.tsv
+    - mondo_narrowmatch_omim.sssom.tsv
+    - mondo_narrowmatch_orphanet.sssom.tsv
+    - mondo_relatedmatch_omim.sssom.tsv
+    - mondo_relatedmatch_orphanet.sssom.tsv
+    - mondo_hasdbxref_omim.sssom.tsv
+    - mondo_hasdbxref_orphanet.sssom.tsv
