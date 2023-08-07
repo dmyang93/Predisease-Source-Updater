@@ -5,13 +5,14 @@ from logging import Logger
 from common_utils import read_config_file
 
 
-class MondoHandler:
+class MondoImporter:
     def __init__(self, logger: Logger, config_file_path: str, output_dir: str):
         config = read_config_file(config_file_path)
         self.logger = logger
         self.config = config["MONDO"]
         self.output_dir = output_dir
         self.files = self.config["file_list"]
+        self.mondo_id2omim_id = dict()
 
     def download_files(self):
         """target하는 MONDO data file들을 정해진 디렉토리에 다운로드하는 함수
@@ -43,25 +44,21 @@ class MondoHandler:
 
         return
 
-    def read_files(self, db_type: str) -> dict:
-        """MONDO raw data file 중 특정 db_type에 해당하는 파일들만 읽은 뒤, \
-        MONDO ID와 그 DB ID를 mapping 해주는 dictionary를 리턴하는 함수
+    def read_file(self, mondo_file: str) -> dict:
+        """MONDO raw data file을 읽은 뒤, MONDO ID와 그 DB ID를 mapping 해주는 \
+            dictionary를 업데이트하여 리턴하는 함수
 
         Args:
-            db_type (str): target하는 db_type
+            mondo_file (str): MONDO raw data file
 
         Returns:
-            (dict): MONDO ID와 target DB ID를 mapping 해주는 dictionary
+            (dict): 업데이트된 MONDO ID와 target DB ID를 mapping 해주는 dictionary
         """
-        mondo_id2other_id = dict()
-        for mondo_file in self.files:
-            if db_type in mondo_file:
-                mondo_file_path = os.path.join(self.output_dir, mondo_file)
-                with open(mondo_file_path) as mondo_open:
-                    for line in mondo_open:
-                        if line.startswith("MONDO"):
-                            mondo_id = line.strip().split("\t")[0]
-                            other_id = line.strip().split("\t")[3]
-                            mondo_id2other_id[mondo_id] = other_id
-
-        return mondo_id2other_id
+        mondo_file_path = os.path.join(self.output_dir, mondo_file)
+        with open(mondo_file_path) as mondo_open:
+            for line in mondo_open:
+                print(line)
+                if line.startswith("MONDO"):
+                    mondo_id = line.strip().split("\t")[0]
+                    omim_id = line.strip().split("\t")[3]
+                    self.mondo_id2omim_id[mondo_id] = omim_id
