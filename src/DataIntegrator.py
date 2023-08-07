@@ -100,7 +100,9 @@ class DataIntegrator:
                 confidence,
                 moi,
                 pmids,
-                "PanelApp" "" "",
+                "PanelApp",
+                "",
+                "",
             )
             gp_pairs.append(gp_pair)
 
