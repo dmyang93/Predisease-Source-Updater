@@ -26,17 +26,19 @@ class MondoImporter:
         download_url = self.config["download_url"]
         for mondo_file in self.files:
             mondo_file_path = os.path.join(self.output_dir, mondo_file)
-            print(mondo_file_path)
+            self.logger.info(mondo_file_path)
             download_command = f"wget -O {mondo_file_path} {os.path.join(download_url, mondo_file)}"
 
             trial, max_trial = 1, 3
             while trial <= max_trial:
                 if os.system(download_command) == 0:
                     break
+                self.logger.warning("10 seconds waiting...")
                 time.sleep(10)
                 trial += 1
 
             if not os.path.exists(mondo_file_path):
+                self.logger.warning("1 hour waiting...")
                 time.sleep(3600)
                 if os.system(download_command) != 0:
                     self.logger.error("MONDO data file is not downloaded")
