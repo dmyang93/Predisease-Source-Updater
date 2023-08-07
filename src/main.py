@@ -2,8 +2,8 @@ import os
 import argparse
 
 from common_utils import get_logger
-from GenccHandler import GenccHandler
-from PanelappHandler import PanelappHandler
+from GenccDownloader import GenccDownloader
+from PanelappDownloader import PanelappDownloader
 
 
 def main(log_file_path: str, config_file_path: str, output_dir: str):
@@ -25,19 +25,23 @@ def main(log_file_path: str, config_file_path: str, output_dir: str):
     logger.info(f"   Output directory: {output_dir}")
 
     # GenCC
-    gencc_handler = GenccHandler(logger, config_file_path, output_dir)
+    gencc_downloader = GenccDownloader(logger, config_file_path, output_dir)
     logger.info("1. GenCC data update starts.")
 
     logger.info("1.1. GenCC raw data file download starts.")
-    gencc_handler.download_raw_file()
-    logger.info(f"     GenCC raw data file path: {gencc_handler.raw_file_path}")
+    gencc_downloader.download_raw_file()
+    logger.info(
+        f"     GenCC raw data file path: {gencc_downloader.raw_file_path}"
+    )
 
     logger.info("1.2. GenCC raw data file is read.")
-    uuid2gencc_data = gencc_handler.read_raw_file()
+    uuid2gencc_data = gencc_downloader.read_raw_file()
     logger.info(f"     Total count of GenCC data: {len(uuid2gencc_data)}")
 
     # PanelApp
-    panelapp_handler = PanelappHandler(logger, config_file_path, output_dir)
+    panelapp_downloader = PanelappDownloader(
+        logger, config_file_path, output_dir
+    )
     logger.info("2. PanelApp data update starts.")
 
     entities = ["genes", "strs", "regions"]
@@ -48,11 +52,11 @@ def main(log_file_path: str, config_file_path: str, output_dir: str):
         logger.info(
             f"2.{idx}.1. PanelApp {entity} data by API response download starts."
         )
-        panelapp_entity_data = panelapp_handler.call_paginated_api(entity)
+        panelapp_entity_data = panelapp_downloader.call_paginated_api(entity)
         logger.info(f"       PanelApp {entity} data is downloaded.")
 
         logger.info(f"2.{idx}.2. PanelApp {entity} data is read.")
-        panelapp_id2entity_data = panelapp_handler.extract_data_by_key(
+        panelapp_id2entity_data = panelapp_downloader.extract_data_by_key(
             panelapp_entity_data, entity
         )
         logger.info(

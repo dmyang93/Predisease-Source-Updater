@@ -1,12 +1,12 @@
 import pytest
 from unittest import mock
 
-from PanelappHandler import PanelappHandler
+from PanelappDownloader import PanelappDownloader
 
 
 @pytest.fixture
 @mock.patch(
-    "PanelappHandler.read_config_file",
+    "PanelappDownloader.read_config_file",
     return_value=(
         {
             "PanelApp": {
@@ -23,25 +23,27 @@ from PanelappHandler import PanelappHandler
         }
     ),
 )
-def mock_panelapphandler(mock_config):
-    panelapp_handler = PanelappHandler(
+def mock_panelappdownloader(mock_config):
+    panelapp_downloader = PanelappDownloader(
         "log.txt", "config.yaml", "path/to/output"
     )
 
-    return panelapp_handler
+    return panelapp_downloader
 
 
 @mock.patch("requests.get")
-def test_call_api(mock_requests_get, mock_panelapphandler):
+def test_call_api(mock_requests_get, mock_panelappdownloader):
     mock_requests_get.return_value.status_code = 200
     expected = "https://panelapp.api.co.uk/genes"
-    mock_panelapphandler.call_api("genes")
+    mock_panelappdownloader.call_api("genes")
     mock_requests_get.assert_called_with(expected)
 
 
 @mock.patch("builtins.open", new_callable=mock.mock_open)
 @mock.patch("requests.get")
-def test_call_paginated_api(mock_requests_get, mock_open, mock_panelapphandler):
+def test_call_paginated_api(
+    mock_requests_get, mock_open, mock_panelappdownloader
+):
     mock_requests_get.return_value.status_code = 200
     mock_requests_get.return_value.json.side_effect = [
         {
@@ -66,10 +68,10 @@ def test_call_paginated_api(mock_requests_get, mock_open, mock_panelapphandler):
         {"a": 2, "b": [0, 10, 20], "c": "jkl"},
     ]
 
-    assert expected == mock_panelapphandler.call_paginated_api("genes")
+    assert expected == mock_panelappdownloader.call_paginated_api("genes")
 
 
-def test_extract_data_by_key(mock_panelapphandler):
+def test_extract_data_by_key(mock_panelappdownloader):
     entity_panel_data = [
         {
             "entity_name": "ABCDEF",
@@ -82,6 +84,6 @@ def test_extract_data_by_key(mock_panelapphandler):
     entity = "genes"
     expected = {"ABCDEF_panel1000": ["gene_val1", 1, 30]}
 
-    assert expected == mock_panelapphandler.extract_data_by_key(
+    assert expected == mock_panelappdownloader.extract_data_by_key(
         entity_panel_data, entity
     )
