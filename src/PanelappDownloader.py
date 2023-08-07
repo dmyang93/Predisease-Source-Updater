@@ -133,8 +133,7 @@ class PanelappDownloader:
             ]
             >>> entity_panel_id2panelapp_data
             {
-                "ABCDEF_panel1000": ["Tony", 3, 2, 1, "HGNC:1111", 
-                                     "BI", ["seegene", "3billion"]]
+                "ABCDEF_panel1000": ["Tony", 3, 2, 1, "HGNC:1111", "BI", ["seegene", "3billion"]]
             }
 
         """
