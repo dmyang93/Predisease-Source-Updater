@@ -93,14 +93,8 @@ PanelApp:
 MONDO:
   download_url: https://raw.githubusercontent.com/monarch-initiative/mondo/master/src/ontology/mappings
   file_list:
-    - mondo_broadmatch_orphanet.sssom.tsv
     - mondo_closematch_omim.sssom.tsv
-    - mondo_closematch_orphanet.sssom.tsv
     - mondo_exactmatch_omim.sssom.tsv
-    - mondo_exactmatch_orphanet.sssom.tsv
     - mondo_narrowmatch_omim.sssom.tsv
-    - mondo_narrowmatch_orphanet.sssom.tsv
     - mondo_relatedmatch_omim.sssom.tsv
-    - mondo_relatedmatch_orphanet.sssom.tsv
     - mondo_hasdbxref_omim.sssom.tsv
-    - mondo_hasdbxref_orphanet.sssom.tsv
