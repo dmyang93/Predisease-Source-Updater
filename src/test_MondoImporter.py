@@ -2,12 +2,12 @@ import os
 import pytest
 from unittest import mock
 
-from MondoImporter import MondoHandler
+from MondoImporter import MondoImporter
 
 
 @pytest.fixture
 @mock.patch(
-    "MondoHandler.read_config_file",
+    "MondoImporter.read_config_file",
     return_value={
         "MONDO": {
             "download_url": "https://mondo.download.com",
@@ -20,27 +20,27 @@ from MondoImporter import MondoHandler
         }
     },
 )
-def mock_mondohandler(mock_config):
-    mondo_handler = MondoHandler("log.txt", "config.yaml", "path/to/download")
+def mock_mondoimporter(mock_config):
+    mondo_importer = MondoImporter("log.txt", "config.yaml", "path/to/download")
 
-    return mondo_handler
+    return mondo_importer
 
 
 @mock.patch("os.path.exists")
 @mock.patch("time.sleep")
 @mock.patch("os.system", return_value=0)
 def test_download_files(
-    mock_os_system, mock_time_sleep, mock_os_path_exists, mock_mondohandler
+    mock_os_system, mock_time_sleep, mock_os_path_exists, mock_mondoimporter
 ):
-    download_url = mock_mondohandler.config["download_url"]
+    download_url = mock_mondoimporter.config["download_url"]
     expected_cmd_calls = list()
-    for file in mock_mondohandler.files:
-        expected_file = os.path.join(mock_mondohandler.output_dir, file)
+    for file in mock_mondoimporter.files:
+        expected_file = os.path.join(mock_mondoimporter.output_dir, file)
         expected_url = os.path.join(download_url, file)
         expected_cmd = f"wget -O {expected_file} {expected_url}"
         expected_cmd_calls.append(mock.call(expected_cmd))
 
-    mock_mondohandler.download_files()
+    mock_mondoimporter.download_files()
     mock_os_system.assert_has_calls(expected_cmd_calls)
 
 
@@ -55,13 +55,13 @@ def test_download_files(
         "MONDO:0003\tdisease 0003\tskos:exactmatch\tOMIM:0003\tdisease 0003\tManual\n"
     ),
 )
-def test_read_file(mock_opener, mock_mondohandler):
+def test_read_file(mock_opener, mock_mondoimporter):
     expected = {
         "MONDO:0001": "OMIM:0001",
         "MONDO:0002": "OMIM:0002",
         "MONDO:0003": "OMIM:0003",
         "MONDO:0004": "OMIM:0004",
     }
-    mock_mondohandler.mondo_id2omim_id = {"MONDO:0004": "OMIM:0004"}
-    mock_mondohandler.read_file("mock.tsv")
-    assert expected == mock_mondohandler.mondo_id2omim_id
+    mock_mondoimporter.mondo_id2omim_id = {"MONDO:0004": "OMIM:0004"}
+    mock_mondoimporter.read_file("mock.tsv")
+    assert expected == mock_mondoimporter.mondo_id2omim_id
