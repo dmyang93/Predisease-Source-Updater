@@ -51,17 +51,18 @@ def test_download_files(
         "#This is a MONDO-OMIM file data for mocking\n"
         "subject_id\tsubject_label\tpredicate_id\tobject_id\tobject_label\tmapping\n"
         "MONDO:0001\tdisease 0001\tskos:exactmatch\tOMIM:0001\tdisease 0001\tManual\n"
-        "MONDO:0002\tdisease 0002\tskos:exactmatch\tOMIM:0002\tdisease 0002\tManual\n"
+        "MONDO:0002\tdisease 0002\tskos:exactmatch\tOMIM:0005\tdisease 0002\tManual\n"
         "MONDO:0003\tdisease 0003\tskos:exactmatch\tOMIM:0003\tdisease 0003\tManual\n"
     ),
 )
 def test_read_file(mock_opener, mock_mondoimporter):
     expected = {
-        "MONDO:0001": "OMIM:0001",
-        "MONDO:0002": "OMIM:0002",
-        "MONDO:0003": "OMIM:0003",
-        "MONDO:0004": "OMIM:0004",
+        "MONDO:0001": ["OMIM:0001"],
+        "MONDO:0002": ["OMIM:0002", "OMIM:0005"],
+        "MONDO:0003": ["OMIM:0003"],
+        "MONDO:0004": ["OMIM:0004"],
     }
-    mock_mondoimporter.mondo_id2omim_id = {"MONDO:0004": "OMIM:0004"}
+    mock_mondoimporter.mondo_id2omim_id["MONDO:0002"] = ["OMIM:0002"]
+    mock_mondoimporter.mondo_id2omim_id["MONDO:0004"] = ["OMIM:0004"]
     mock_mondoimporter.read_file("mock.tsv")
     assert expected == mock_mondoimporter.mondo_id2omim_id

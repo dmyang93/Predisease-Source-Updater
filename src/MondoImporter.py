@@ -1,6 +1,7 @@
 import os
 import time
 from logging import Logger
+from collections import defaultdict
 
 from common_utils import read_config_file
 
@@ -12,7 +13,7 @@ class MondoImporter:
         self.config = config["MONDO"]
         self.output_dir = output_dir
         self.files = self.config["file_list"]
-        self.mondo_id2omim_id = dict()
+        self.mondo_id2omim_id = defaultdict(list)
 
     def download_files(self):
         """target하는 MONDO data file들을 정해진 디렉토리에 다운로드하는 함수
@@ -46,19 +47,18 @@ class MondoImporter:
 
     def read_file(self, mondo_file: str) -> dict:
         """MONDO raw data file을 읽은 뒤, MONDO ID와 그 DB ID를 mapping 해주는 \
-            dictionary를 업데이트하여 리턴하는 함수
+            dictionary를 업데이트하는 함수
 
         Args:
             mondo_file (str): MONDO raw data file
-
-        Returns:
-            (dict): 업데이트된 MONDO ID와 target DB ID를 mapping 해주는 dictionary
+            
         """
         mondo_file_path = os.path.join(self.output_dir, mondo_file)
         with open(mondo_file_path) as mondo_open:
             for line in mondo_open:
-                print(line)
                 if line.startswith("MONDO"):
                     mondo_id = line.strip().split("\t")[0]
                     omim_id = line.strip().split("\t")[3]
-                    self.mondo_id2omim_id[mondo_id] = omim_id
+                    self.mondo_id2omim_id[mondo_id].append(omim_id)
+
+        return
