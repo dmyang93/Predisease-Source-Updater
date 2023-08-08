@@ -15,7 +15,7 @@ class MondoImporter:
         self.files = self.config["file_list"]
         self.mondo_id2omim_id = defaultdict(list)
 
-    def download_files(self):
+    def download_files(self) -> None:
         """target하는 MONDO data file들을 정해진 디렉토리에 다운로드하는 함수
 
         Note:
@@ -47,7 +47,7 @@ class MondoImporter:
 
         return
 
-    def read_file(self, mondo_file: str) -> dict:
+    def read_file(self, mondo_file: str) -> None:
         """MONDO raw data file을 읽은 뒤, MONDO ID와 그 DB ID를 mapping 해주는 \
             dictionary를 업데이트하는 함수
 
