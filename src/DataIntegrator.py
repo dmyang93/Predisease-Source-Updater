@@ -134,5 +134,27 @@ class DataIntegrator:
 
     def extract_omim_ids(self, strings: str) -> list:
         omim_ids = list()
-        omim_re1 = "^[0-9]{6}[^0-9]"
-        omim_re2 = "[^0-9][0-9]{6}[^0-9]"
+        omim_re1 = re.compile("^[0-9]{6}[^0-9]")
+        omim_re2 = re.compile("[^0-9][0-9]{6}[^0-9]")
+        omim_re3 = re.compile("[^0-9][0-9]{6}$")
+
+        omim_re1_search = omim_re1.search(strings)
+        omim_re2_ids = omim_re2.findall(strings)
+        omim_re3_search = omim_re3.search(strings)
+
+        if omim_re1_search:
+            omim_id = omim_re1_search.group()
+            omim_id = omim_id[:-1]
+            omim_ids.append(omim_id)
+
+        if omim_re2_ids:
+            for omim_re2_id in omim_re2_ids:
+                omim_id = omim_re2_id[1:-1]
+                omim_ids.append(omim_id)
+
+        if omim_re3_search:
+            omim_id = omim_re3_search.group()
+            omim_id = omim_id[1:]
+            omim_ids.append(omim_id)
+
+        return omim_ids
