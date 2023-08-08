@@ -69,7 +69,7 @@ class DataIntegrator:
                 panel_disease_sub_group,
                 _,
                 relevant_disorders,
-                _,
+                submission_date,
                 phenotypes,
                 confidence,
                 moi,
@@ -131,3 +131,8 @@ class DataIntegrator:
                 ids.append(id_re)
 
         return ids
+
+    def extract_omim_ids(self, strings: str) -> list:
+        omim_ids = list()
+        omim_re1 = "^[0-9]{6}[^0-9]"
+        omim_re2 = "[^0-9][0-9]{6}[^0-9]"
