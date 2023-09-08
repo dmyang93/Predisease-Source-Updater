@@ -4,6 +4,7 @@ import argparse
 from common_utils import get_logger
 from GenccDownloader import GenccDownloader
 from PanelappDownloader import PanelappDownloader
+from MondoImporter import MondoImporter
 
 
 def main(log_file_path: str, config_file_path: str, output_dir: str):
@@ -63,6 +64,20 @@ def main(log_file_path: str, config_file_path: str, output_dir: str):
             f"       Total count of PanelApp {entity} data: {len(panelapp_id2entity_data)}"
         )
         panelapp_data.append(panelapp_id2entity_data)
+
+    # MONDO
+    mondo_importer = MondoImporter(logger, config_file_path, output_dir)
+    logger.info("3. MONDO raw data file import starts.")
+
+    logger.info("3.1 MONDO raw data file download starts.")
+    mondo_importer.download_files()
+    logger.info(
+        f"    The number of MONDO raw data files: {len(mondo_importer.files)}"
+    )
+    logger.info("3.2 MONDO raw data file is read.")
+    for mondo_omim_file in mondo_importer.files:
+        logger.info(f"    {mondo_omim_file}")
+        mondo_importer.read_file(mondo_omim_file)
 
 
 if __name__ == "__main__":

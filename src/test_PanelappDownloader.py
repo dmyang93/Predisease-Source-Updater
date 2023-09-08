@@ -24,11 +24,11 @@ from PanelappDownloader import PanelappDownloader
     ),
 )
 def mock_panelappdownloader(mock_config):
-    panelapp_downloader = PanelappDownloader(
+    panlapp_downloader = PanelappDownloader(
         "log.txt", "config.yaml", "path/to/output"
     )
 
-    return panelapp_downloader
+    return panlapp_downloader
 
 
 @mock.patch("requests.get")

@@ -89,3 +89,8 @@ PanelApp:
       - penetrance
       - evidence
       - publications
+
+MONDO:
+  download_url: https://raw.githubusercontent.com/monarch-initiative/mondo/master/src/ontology/mappings
+  file_list:
+    - mondo_hasdbxref_omim.sssom.tsv
